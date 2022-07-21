@@ -5,7 +5,7 @@
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)
   set(ruy_0_Wall_Wcxx14_compat_Wextra_Wundef "")
 else()
-  set(ruy_0_Wall_Wcxx14_compat_Wextra_Wundef "-Wall;-Wextra;-Wc++14-compat;-Wundef")
+  set(ruy_0_Wall_Wcxx14_compat_Wextra_Wundef "-Wall;-Wextra;-Wundef")
 endif()
 
 if(CMAKE_SYSTEM_PROCESSOR STREQUAL arm)
