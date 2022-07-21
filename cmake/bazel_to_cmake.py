@@ -49,7 +49,7 @@ replacements = [
     ['selects.config_setting_group', 'config_setting_group'],
     ['@com_google_googletest//:gtest', 'gtest'],
     ['@com_google_googletest//:gtest_main', 'gtest_main'],
-    ['@cpuinfo', 'cpuinfo::cpuinfo'],
+    ['@cpuinfo', 'cpuinfo'],
 ]
 
 
@@ -97,8 +97,6 @@ def generate_cmake_select(select_name, dict):
       condition = 'MSVC'
     elif re.search(r':ruy_profiler$', key):
       condition = '${RUY_PROFILER}'
-    elif re.search(r'//tools/cc_target_os:xtensa$', key):
-      condition = 'CMAKE_SYSTEM_NAME STREQUAL xtensa-esp32-elf'
     else:
       raise ValueError(f'Unhandled key in select: {key}')
 

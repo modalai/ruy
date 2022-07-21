@@ -17,7 +17,6 @@ def ruy_copts_warnings():
             "-Wextra",
             # TensorFlow is C++14 at the moment. This flag ensures that we warn
             # on any code that isn't C++14, but MSVC does not support it.
-            "-Wc++14-compat",
             # Warn on preprocessor expansion of an undefined token, e.g. catching
             # typos such as `#ifdef __linus__` instead of `#ifdef __linux__`.
             # Not supported by MSVC.

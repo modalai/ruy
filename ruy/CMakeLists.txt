@@ -107,8 +107,6 @@ ruy_cc_library(
 
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)
   set(ruy_3_pthread "")
-elseif(CMAKE_SYSTEM_NAME STREQUAL xtensa-esp32-elf)
-  set(ruy_3_pthread "")
 else()
   set(ruy_3_pthread "-pthread")
 endif()
@@ -412,13 +410,13 @@ else()
 endif()
 
 if(CMAKE_SYSTEM_PROCESSOR STREQUAL ppc64 OR CMAKE_SYSTEM_PROCESSOR STREQUAL ppc64le)
-  set(ruy_6_cpuinfo_cpuinfo "")
+  set(ruy_6_cpuinfo "")
 elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL s390 OR CMAKE_SYSTEM_PROCESSOR STREQUAL s390x)
-  set(ruy_6_cpuinfo_cpuinfo "")
+  set(ruy_6_cpuinfo "")
 elseif(CMAKE_SYSTEM_NAME STREQUAL Fuchsia)
-  set(ruy_6_cpuinfo_cpuinfo "")
+  set(ruy_6_cpuinfo "")
 else()
-  set(ruy_6_cpuinfo_cpuinfo "cpuinfo::cpuinfo")
+  set(ruy_6_cpuinfo "cpuinfo")
 endif()
 
 ruy_cc_library(
@@ -438,7 +436,7 @@ ruy_cc_library(
     ruy_platform
     ruy_check_macros
     ruy_cpu_cache_params
-    ${ruy_6_cpuinfo_cpuinfo}
+    ${ruy_6_cpuinfo}
 )
 
 ruy_cc_library(
@@ -1449,44 +1447,6 @@ ruy_cc_binary(
     ruy_profiler_instrumentation
 )
 
-ruy_cc_binary(
-  NAME
-    ruy_benchmark_i8_i16_i32_i16
-  TESTONLY
-  SRCS
-    benchmark.cc
-  COPTS
-    ${ruy_0_Wall_Wcxx14_compat_Wextra_Wundef}
-    ${ruy_1_mfpu_neon}
-    ${ruy_2_O3}
-    -DRUY_TEST_LHSSCALAR=i8
-    -DRUY_TEST_RHSSCALAR=i16
-    -DRUY_TEST_ACCUMSCALAR=i32
-    -DRUY_TEST_DSTSCALAR=i16
-  DEPS
-    ruy_test_lib
-    ruy_profiler_instrumentation
-)
-
-ruy_cc_binary(
-  NAME
-    ruy_benchmark_i16_i8_i32_i16
-  TESTONLY
-  SRCS
-    benchmark.cc
-  COPTS
-    ${ruy_0_Wall_Wcxx14_compat_Wextra_Wundef}
-    ${ruy_1_mfpu_neon}
-    ${ruy_2_O3}
-    -DRUY_TEST_LHSSCALAR=i16
-    -DRUY_TEST_RHSSCALAR=i8
-    -DRUY_TEST_ACCUMSCALAR=i32
-    -DRUY_TEST_DSTSCALAR=i16
-  DEPS
-    ruy_test_lib
-    ruy_profiler_instrumentation
-)
-
 ruy_cc_test(
   NAME
     ruy_test_fast_f32_f32_f32_f32
@@ -1651,42 +1611,6 @@ ruy_cc_test(
 
 ruy_cc_test(
   NAME
-    ruy_test_fast_i8_i16_i32_i16
-  SRCS
-    test_fast.cc
-  COPTS
-    ${ruy_0_Wall_Wcxx14_compat_Wextra_Wundef}
-    ${ruy_1_mfpu_neon}
-    ${ruy_2_O3}
-    -DRUY_TEST_LHSSCALAR=i8
-    -DRUY_TEST_RHSSCALAR=i16
-    -DRUY_TEST_ACCUMSCALAR=i32
-    -DRUY_TEST_DSTSCALAR=i16
-  DEPS
-    ruy_test_lib
-    gtest_main
-)
-
-ruy_cc_test(
-  NAME
-    ruy_test_fast_i16_i8_i32_i16
-  SRCS
-    test_fast.cc
-  COPTS
-    ${ruy_0_Wall_Wcxx14_compat_Wextra_Wundef}
-    ${ruy_1_mfpu_neon}
-    ${ruy_2_O3}
-    -DRUY_TEST_LHSSCALAR=i16
-    -DRUY_TEST_RHSSCALAR=i8
-    -DRUY_TEST_ACCUMSCALAR=i32
-    -DRUY_TEST_DSTSCALAR=i16
-  DEPS
-    ruy_test_lib
-    gtest_main
-)
-
-ruy_cc_test(
-  NAME
     ruy_test_slow_f32_f32_f32_f32
   SRCS
     test_slow.cc
@@ -1787,46 +1711,6 @@ ruy_cc_test(
 
 ruy_cc_test(
   NAME
-    ruy_test_slow_i8_i16_i32_i16
-  SRCS
-    test_slow.cc
-  COPTS
-    ${ruy_0_Wall_Wcxx14_compat_Wextra_Wundef}
-    ${ruy_1_mfpu_neon}
-    ${ruy_2_O3}
-    -DRUY_TEST_LHSSCALAR=i8
-    -DRUY_TEST_RHSSCALAR=i16
-    -DRUY_TEST_ACCUMSCALAR=i32
-    -DRUY_TEST_DSTSCALAR=i16
-  DEPS
-    ruy_test_lib
-    gtest_main
-  TAGS
-    slow
-)
-
-ruy_cc_test(
-  NAME
-    ruy_test_slow_i16_i8_i32_i16
-  SRCS
-    test_slow.cc
-  COPTS
-    ${ruy_0_Wall_Wcxx14_compat_Wextra_Wundef}
-    ${ruy_1_mfpu_neon}
-    ${ruy_2_O3}
-    -DRUY_TEST_LHSSCALAR=i16
-    -DRUY_TEST_RHSSCALAR=i8
-    -DRUY_TEST_ACCUMSCALAR=i32
-    -DRUY_TEST_DSTSCALAR=i16
-  DEPS
-    ruy_test_lib
-    gtest_main
-  TAGS
-    slow
-)
-
-ruy_cc_test(
-  NAME
     ruy_test_overflow_dst_zero_point
   SRCS
     test_overflow_dst_zero_point.cc
@@ -1837,8 +1721,8 @@ ruy_cc_test(
   DEPS
     ruy_gtest_wrapper
     ruy_matrix
-    ruy_path
     ruy
+    ruy_path
     ruy_test_lib
     ruy_tune
 )

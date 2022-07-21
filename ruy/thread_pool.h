@@ -98,12 +98,12 @@ class ThreadPool {
   // copy construction disallowed
   ThreadPool(const ThreadPool&) = delete;
 
-  // The worker threads in this pool. They are owned by the pool:
+  // The threads in this pool. They are owned by the pool:
   // the pool creates threads and destroys them in its destructor.
   std::vector<Thread*> threads_;
 
   // The BlockingCounter used to wait for the threads.
-  BlockingCounter count_busy_threads_;
+  BlockingCounter counter_to_decrement_when_ready_;
 
   // This value was empirically derived with some microbenchmark, we don't have
   // high confidence in it.

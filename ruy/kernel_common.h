@@ -101,8 +101,7 @@ struct KernelParams8bit {
   const std::int8_t* lhs_base_ptr;
   const std::int32_t* multiplier_fixedpoint;
   const std::int32_t* multiplier_exponent;
-  // Make it void* to support 8bit(LHS)x16bit(RHS) case.
-  const void* rhs_base_ptr;
+  const std::int8_t* rhs_base_ptr;
   void* dst_base_ptr;
   std::int32_t lhs_zero_point;
   std::int32_t rhs_zero_point;
@@ -126,12 +125,11 @@ struct KernelParams8bit {
   std::uint8_t dst_tmp_buf[LhsCols * RhsCols * kMaxDstTypeSize];
   std::int32_t multiplier_fixedpoint_buf[LhsCols];
   std::int32_t multiplier_exponent_buf[LhsCols];
-  std::size_t rhs_scalar_size;
 };
 
-template <typename RhsScalar, typename DstScalar, int LhsCols, int RhsCols>
+template <typename DstScalar, int LhsCols, int RhsCols>
 void MakeKernelParams8bit(const PMat<std::int8_t>& lhs,
-                          const PMat<RhsScalar>& rhs,
+                          const PMat<std::int8_t>& rhs,
                           const MulParams<std::int32_t, DstScalar>& mul_params,
                           int start_row, int start_col, int end_row,
                           int end_col, Mat<DstScalar>* dst,
@@ -147,7 +145,6 @@ void MakeKernelParams8bit(const PMat<std::int8_t>& lhs,
   RUY_DCHECK_EQ(end_col % RhsCols, 0);
 
   params->lhs_base_ptr = lhs.data + start_row * lhs.layout.stride;
-  params->rhs_scalar_size = sizeof(RhsScalar);
   params->rhs_base_ptr = rhs.data + start_col * rhs.layout.stride;
   params->flags = 0;
   params->bias = params->zero_data;
@@ -171,7 +168,7 @@ void MakeKernelParams8bit(const PMat<std::int8_t>& lhs,
   params->last_row = end_row - LhsCols;
   params->last_col = end_col - RhsCols;
   params->lhs_stride = lhs.layout.stride;
-  params->rhs_stride = params->rhs_scalar_size * rhs.layout.stride;
+  params->rhs_stride = rhs.layout.stride;
   params->dst_stride = sizeof(DstScalar) * dst->layout.stride;
   params->lhs_zero_point = lhs.zero_point;
   params->rhs_zero_point = rhs.zero_point;

@@ -14,8 +14,20 @@
 
 function(ruy_include_directories NAME DEPS)
   target_include_directories(${NAME}
-    PUBLIC
-      "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>"
-      "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
+      PUBLIC
+      "${PROJECT_SOURCE_DIR}"
   )
+  if (cpuinfo IN_LIST DEPS)
+    target_include_directories(${NAME}
+      PRIVATE
+        "${PROJECT_SOURCE_DIR}/third_party/cpuinfo/include"
+    )
+  endif()
+  if ((gtest IN_LIST DEPS) OR
+      (gtest_main IN_LIST DEPS))
+    target_include_directories(${NAME}
+      PRIVATE
+        "${PROJECT_SOURCE_DIR}/third_party/googletest/googletest"
+    )
+  endif()
 endfunction()
