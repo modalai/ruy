@@ -59,8 +59,8 @@ function(ruy_cc_library)
         ${_RULE_DEFINES}
     )
   else()
-    # Generating a static binary library.
-    add_library(${_NAME} STATIC "")
+    # Generating a SHARED binary library.
+    add_library(${_NAME} SHARED "")
     target_sources(${_NAME}
       PRIVATE
         ${_RULE_SRCS}
